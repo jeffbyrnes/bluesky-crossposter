@@ -1,6 +1,12 @@
 from settings.auth import *
 from settings.paths import *
-from local.functions import write_log, cleanup, post_cache_read, post_cache_write, get_post_time_limit
+from local.functions import (
+    write_log,
+    cleanup,
+    post_cache_read,
+    post_cache_write,
+    get_post_time_limit,
+)
 from local.db import db_read, db_backup, save_db
 from input.bluesky import get_posts
 from output.post import post

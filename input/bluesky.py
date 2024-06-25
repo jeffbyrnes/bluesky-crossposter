@@ -5,7 +5,7 @@ from settings import settings
 from local.functions import write_log, lang_toggle
 import arrow
 
-date_in_format = 'YYYY-MM-DDTHH:mm:ss'
+date_in_format = "YYYY-MM-DDTHH:mm:ss"
 
 # Setting up connections to bluesky, twitter and mastodon
 
@@ -14,28 +14,33 @@ bsky.login(BSKY_HANDLE, BSKY_PASSWORD)
 
 # Getting posts from bluesky
 
-def get_posts(timelimit = arrow.utcnow().shift(hours = -1)):
+
+def get_posts(timelimit=arrow.utcnow().shift(hours=-1)):
     write_log("Gathering posts")
     posts = {}
     # Getting feed of user
-    profile_feed = bsky.app.bsky.feed.get_author_feed({'actor': BSKY_HANDLE})
+    profile_feed = bsky.app.bsky.feed.get_author_feed({"actor": BSKY_HANDLE})
     visibility = settings.visibility
     for feed_view in profile_feed.feed:
         # If the post was not written by the account that posted it, it is a repost and we skip it.
         if feed_view.post.author.handle != BSKY_HANDLE:
             continue
         repost = False
-        created_at = arrow.get(feed_view.post.record.created_at.split(".")[0], date_in_format)
+        created_at = arrow.get(
+            feed_view.post.record.created_at.split(".")[0], date_in_format
+        )
         if hasattr(feed_view.reason, "indexed_at"):
             repost = True
-            created_at = arrow.get(feed_view.reason.indexed_at.split(".")[0], date_in_format)
+            created_at = arrow.get(
+                feed_view.reason.indexed_at.split(".")[0], date_in_format
+            )
         # The language settings on posts are used to determine if a post should be crossposted
-        # to a specific service. Here we check the settings against the language of the post to 
+        # to a specific service. Here we check the settings against the language of the post to
         # see what service it should post to. We also check if posting for a service is enabled
         # at all in the settings. If it shouldn't post to either, we skip it.
         langs = feed_view.post.record.langs
-        mastodon_post = (lang_toggle(langs, "mastodon") and settings.Mastodon)
-        twitter_post = (lang_toggle(langs, "twitter") and settings.Twitter)
+        mastodon_post = lang_toggle(langs, "mastodon") and settings.Mastodon
+        twitter_post = lang_toggle(langs, "twitter") and settings.Twitter
         if not mastodon_post and not twitter_post:
             continue
         # If post has an embed of type record it is a quote post, and should not be crossposted
@@ -52,7 +57,9 @@ def get_posts(timelimit = arrow.utcnow().shift(hours = -1)):
             # to how the variable "mentions" is set in settings. If it is set to "ignore", nothing is
             # done.
             if settings.mentions != "ignore":
-                text, send_mention = parse_mentioned_username(feed_view.post.record, text)
+                text, send_mention = parse_mentioned_username(
+                    feed_view.post.record, text
+                )
         # If "mentions" is set to "skip" a post with a mention should not be crossposted, and parse_mentioned_username will
         # return send_mention as False.
         if not send_mention:
@@ -72,9 +79,14 @@ def get_posts(timelimit = arrow.utcnow().shift(hours = -1)):
         # If there is some reason you would want to crosspost a post referencing a bluesky-feed that I'm not seeing, I might update this in the future.
         if feed_view.post.embed and hasattr(feed_view.post.embed, "record"):
             try:
-                quoted_user, quoted_post, quote_url, open = get_quote_post(feed_view.post.embed.record)
+                quoted_user, quoted_post, quote_url, open = get_quote_post(
+                    feed_view.post.embed.record
+                )
             except:
-                write_log("Post " + cid + " is of a type the crossposter can't parse.", "error")
+                write_log(
+                    "Post " + cid + " is of a type the crossposter can't parse.",
+                    "error",
+                )
                 continue
             # If post is a quote post of a post from another user, and quote-posting is disabled in settings
             # or the post is not open to users not logged in, the post will be skipped
@@ -88,17 +100,20 @@ def get_posts(timelimit = arrow.utcnow().shift(hours = -1)):
         # Checking if post is regular reply
         if feed_view.post.record.reply:
             reply_to_post = feed_view.post.record.reply.parent.cid
-            # Poster will try to fetch reply to-username the "ordinary" way, 
+            # Poster will try to fetch reply to-username the "ordinary" way,
             # and if it fails, it will try getting the entire thread and
             # finding it that way
             try:
                 reply_to_user = feed_view.reply.parent.author.handle
             except:
                 reply_to_user = get_reply_to_user(feed_view.post.record.reply.parent)
-        # If unable to fetch user that was replied to, code will skip this post. If the post was not a 
+        # If unable to fetch user that was replied to, code will skip this post. If the post was not a
         # reply at all, the reply_to_user will still be set to the user account.
         if not reply_to_user:
-            write_log("Unable to find the user that post " + cid + " replies to or quotes", "error")
+            write_log(
+                "Unable to find the user that post " + cid + " replies to or quotes",
+                "error",
+            )
             continue
         # Checking if post is withing timelimit and not a reply to someone elses post.
         if created_at > timelimit and reply_to_user == BSKY_HANDLE:
@@ -107,12 +122,20 @@ def get_posts(timelimit = arrow.utcnow().shift(hours = -1)):
             images = []
             if feed_view.post.embed and hasattr(feed_view.post.embed, "images"):
                 image_data = feed_view.post.embed.images
-            elif feed_view.post.embed and hasattr(feed_view.post.embed, "media") and hasattr(feed_view.post.embed.media, "images"):
+            elif (
+                feed_view.post.embed
+                and hasattr(feed_view.post.embed, "media")
+                and hasattr(feed_view.post.embed.media, "images")
+            ):
                 image_data = feed_view.post.embed.media.images
             # Sometimes posts have included links that are not included in the actual text of the post. This adds adds that back.
-            if feed_view.post.embed and hasattr(feed_view.post.embed, "external") and hasattr(feed_view.post.embed.external, "uri"):
+            if (
+                feed_view.post.embed
+                and hasattr(feed_view.post.embed, "external")
+                and hasattr(feed_view.post.embed.external, "uri")
+            ):
                 if feed_view.post.embed.external.uri not in text:
-                    text += '\n'+feed_view.post.embed.external.uri
+                    text += "\n" + feed_view.post.embed.external.uri
             if image_data:
                 for image in image_data:
                     images.append({"url": image.fullsize, "alt": image.alt})
@@ -131,18 +154,19 @@ def get_posts(timelimit = arrow.utcnow().shift(hours = -1)):
                 "mastodon": mastodon_post,
                 "allowed_reply": allowed_reply,
                 "repost": repost,
-                "timestamp": created_at
+                "timestamp": created_at,
             }
             # Saving post to posts dictionary
-            posts[cid] = post_info;
+            posts[cid] = post_info
     return posts
+
 
 # Function for getting username of person replied to. It can mostly be retrieved from the reply section of the tweet that has been fetched,
 # but in cases where the original post in a thread has been deleted it causes some weirdness. Hopefully this resolves it.
 def get_reply_to_user(reply):
     uri = reply.uri
     username = ""
-    try: 
+    try:
         response = bsky.app.bsky.feed.get_post_thread(params={"uri": uri})
         username = response.thread.post.author.handle
     except:
@@ -151,16 +175,23 @@ def get_reply_to_user(reply):
 
 
 def get_allowed_reply(post):
-        reply_restriction = post.threadgate
-        if reply_restriction is None:
-            return "All"
-        if len(reply_restriction.record.allow) == 0:
-            return "None"
-        if reply_restriction.record.allow[0].py_type == "app.bsky.feed.threadgate#followingRule":
-            return "Following"
-        if reply_restriction.record.allow[0].py_type == "app.bsky.feed.threadgate#mentionRule":
-            return "Mentioned"
-        return "Unknown"
+    reply_restriction = post.threadgate
+    if reply_restriction is None:
+        return "All"
+    if len(reply_restriction.record.allow) == 0:
+        return "None"
+    if (
+        reply_restriction.record.allow[0].py_type
+        == "app.bsky.feed.threadgate#followingRule"
+    ):
+        return "Following"
+    if (
+        reply_restriction.record.allow[0].py_type
+        == "app.bsky.feed.threadgate#mentionRule"
+    ):
+        return "Mentioned"
+    return "Unknown"
+
 
 # Function for restoring shortened URLS
 def restore_urls(record):
@@ -206,6 +237,7 @@ def parse_mentioned_username(record, text):
             url = base_url + did
             text = text.replace(username, url)
     return text, send_mention
+
 
 # Quoted posts can be stored in several different ways for some reason. With this
 # function we check which one is used and fetches information accordingly.
