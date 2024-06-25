@@ -25,7 +25,7 @@ services:
       POST_TIME_LIMIT:
       MAX_PER_HOUR:
       OVERFLOW_POST:
-      # job interval, defaults to 1 hour(the max lag between bluesky and twitter/mastodon)
+      # job interval, defaults to 1 hour (the max lag between Bluesky and Twitter/Mastodon)
       RUN_INTERVAL: 3600
     volumes:
       - ./dbhost:/db
