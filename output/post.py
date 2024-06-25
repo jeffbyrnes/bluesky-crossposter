@@ -73,7 +73,10 @@ def post(posts, database, post_cache):
             tweet_reply = database[reply_to_post]["ids"]["twitter_id"]
             toot_reply = database[reply_to_post]["ids"]["mastodon_id"]
         elif reply_to_post and reply_to_post not in database:
-            write_log("Post " + cid + " was a reply to a post that is not in the database.", "error")
+            write_log(
+                "Post " + cid + " was a reply to a post that is not in the database.",
+                "error",
+            )
             continue
         # If post is a quote post we get the IDs of the posts we want to quote from the database.
         # If the posts are not found in the database we check if the quote_post setting is true or false in settings.
@@ -85,7 +88,12 @@ def post(posts, database, post_cache):
             if settings.quote_posts and quote_url not in text:
                 text += "\n" + quote_url
             elif not settings.quote_posts:
-                write_log("Post " + cid + " was a quote of a post that is not in the database.", "error")
+                write_log(
+                    "Post "
+                    + cid
+                    + " was a quote of a post that is not in the database.",
+                    "error",
+                )
                 continue
         # In case the tweet or toot reply/quote variables are empty, we set them to None, to make sure they are in the correct format for
         # the api requests. This is not necessary for the toot_quote variable, as it is not sent as a parameter in itself anyway.
@@ -115,7 +123,9 @@ def post(posts, database, post_cache):
                 write_log(error, "error")
         # Trying to post to twitter and mastodon. If posting fails the post ID for each service is set to an
         # empty string, letting the code know it should try again next time the code is run.
-        elif not tweet_id and tweet_reply != "skipped" and tweet_reply != "FailedToPost":
+        elif (
+            not tweet_id and tweet_reply != "skipped" and tweet_reply != "FailedToPost"
+        ):
             updates = True
             try:
                 tweet_id = tweet(text, tweet_reply, tweet_quote, images, allowed_reply)
@@ -156,10 +166,13 @@ def post(posts, database, post_cache):
         else:
             write_log("Not posting " + cid + " to Mastodon")
         # Saving post to database
-        database = db_write(cid, tweet_id, toot_id, {"twitter": t_fail, "mastodon": m_fail}, database)
+        database = db_write(
+            cid, tweet_id, toot_id, {"twitter": t_fail, "mastodon": m_fail}, database
+        )
         if posted:
             post_cache[cid] = arrow.utcnow()
     return updates, database, post_cache
+
 
 # Function for getting included images. If no images are included, an empty list will be returned,
 # and the posting functions will know not to include any images.
@@ -171,14 +184,13 @@ def get_images(images):
         # Getting alt text for image. If there is none this will be an empty string.
         alt = image["alt"]
         # Giving the image just a random filename
-        filename = ''.join(random.choice(string.ascii_lowercase) for i in range(10)) + ".jpg"
+        filename = (
+            "".join(random.choice(string.ascii_lowercase) for i in range(10)) + ".jpg"
+        )
         filename = image_path + filename
         # Downloading fullsize version of image
         urllib.request.urlretrieve(image["url"], filename)
         # Saving image info in a dictionary and adding it to the list.
-        image_info = {
-            "filename": filename,
-            "alt": alt
-        }
+        image_info = {"filename": filename, "alt": alt}
         local_images.append(image_info)
     return local_images

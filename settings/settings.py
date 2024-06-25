@@ -25,8 +25,8 @@ mentions = "strip"
 # Accepted values: True, False
 post_default = True
 # The function to select what posts are crossposted (mis)uses the language function in Bluesky.
-# Enter a language here and all posts will be filtered based on if that language is included 
-# in the post. 
+# Enter a language here and all posts will be filtered based on if that language is included
+# in the post.
 # E.g. if you set post_default to True and add German ("de") as post toggle, all posts including
 # German as a language will be skipped. If post_default is set to False, only posts including
 # german will be crossposted. You can use different languages as selectors for Mastodon
@@ -40,7 +40,7 @@ quote_posts = True
 # max_retries sets maximum amount of times poster will retry a failed crosspost.
 # Accepted values: Integers greater than 0
 max_retries = 5
-# post_time_limit sets max time limit (in hours) for fetching posts. If no database exists, all posts within this time 
+# post_time_limit sets max time limit (in hours) for fetching posts. If no database exists, all posts within this time
 # period will be posted.
 # Accepted values: Integers greater than 0
 post_time_limit = 12
@@ -54,18 +54,59 @@ max_per_hour = 0
 overflow_posts = "retry"
 
 
-
 # Override settings with environment variables if they exist
-Twitter = os.environ.get('TWITTER_CROSSPOSTING').lower() == 'true' if os.environ.get('TWITTER_CROSSPOSTING') else Twitter
-Mastodon = os.environ.get('MASTODON_CROSSPOSTING').lower() == 'true' if os.environ.get('MASTODON_CROSSPOSTING') else Mastodon
-log_level = os.environ.get('LOG_LEVEL').lower() == 'true' if os.environ.get('LOG_LEVEL') else log_level
-visibility = os.environ.get('MASTODON_VISIBILITY') if os.environ.get('MASTODON_VISIBILITY') else visibility
-mentions = os.environ.get('MENTIONS') if os.environ.get('MENTIONS') else mentions
-post_default = os.environ.get('POST_DEFAULT').lower() == 'true' if os.environ.get('POST_DEFAULT') else post_default
-mastodon_lang = os.environ.get('MASTODON_LANG') if os.environ.get('MASTODON_LANG') else mastodon_lang
-twitter_lang = os.environ.get('TWITTER_LANG') if os.environ.get('TWITTER_LANG') else twitter_lang
-quote_posts = os.environ.get('QUOTE_POSTS') if os.environ.get('QUOTE_POSTS') else quote_posts
-max_retries = int(os.environ.get('MAX_RETRIES')) if os.environ.get('MAX_RETRIES') else max_retries
-post_time_limit = int(os.environ.get('POST_TIME_LIMIT')) if os.environ.get('POST_TIME_LIMIT') else post_time_limit
-max_per_hour = int(os.environ.get('MAX_PER_HOUR')) if os.environ.get('MAX_PER_HOUR') else max_per_hour
-overflow_posts = int(os.environ.get('OVERFLOW_POST')) if os.environ.get('OVERFLOW_POST') else overflow_posts
+Twitter = (
+    os.environ.get("TWITTER_CROSSPOSTING").lower() == "true"
+    if os.environ.get("TWITTER_CROSSPOSTING")
+    else Twitter
+)
+Mastodon = (
+    os.environ.get("MASTODON_CROSSPOSTING").lower() == "true"
+    if os.environ.get("MASTODON_CROSSPOSTING")
+    else Mastodon
+)
+log_level = (
+    os.environ.get("LOG_LEVEL").lower() == "true"
+    if os.environ.get("LOG_LEVEL")
+    else log_level
+)
+visibility = (
+    os.environ.get("MASTODON_VISIBILITY")
+    if os.environ.get("MASTODON_VISIBILITY")
+    else visibility
+)
+mentions = os.environ.get("MENTIONS") if os.environ.get("MENTIONS") else mentions
+post_default = (
+    os.environ.get("POST_DEFAULT").lower() == "true"
+    if os.environ.get("POST_DEFAULT")
+    else post_default
+)
+mastodon_lang = (
+    os.environ.get("MASTODON_LANG")
+    if os.environ.get("MASTODON_LANG")
+    else mastodon_lang
+)
+twitter_lang = (
+    os.environ.get("TWITTER_LANG") if os.environ.get("TWITTER_LANG") else twitter_lang
+)
+quote_posts = (
+    os.environ.get("QUOTE_POSTS") if os.environ.get("QUOTE_POSTS") else quote_posts
+)
+max_retries = (
+    int(os.environ.get("MAX_RETRIES")) if os.environ.get("MAX_RETRIES") else max_retries
+)
+post_time_limit = (
+    int(os.environ.get("POST_TIME_LIMIT"))
+    if os.environ.get("POST_TIME_LIMIT")
+    else post_time_limit
+)
+max_per_hour = (
+    int(os.environ.get("MAX_PER_HOUR"))
+    if os.environ.get("MAX_PER_HOUR")
+    else max_per_hour
+)
+overflow_posts = (
+    int(os.environ.get("OVERFLOW_POST"))
+    if os.environ.get("OVERFLOW_POST")
+    else overflow_posts
+)

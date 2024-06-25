@@ -20,12 +20,46 @@ TWITTER_ACCESS_TOKEN = ""
 TWITTER_ACCESS_TOKEN_SECRET = ""
 
 # Override settings with environment variables if they exist
-BSKY_HANDLE = os.environ.get('BSKY_HANDLE') if os.environ.get('BSKY_HANDLE') else BSKY_HANDLE
-BSKY_PASSWORD = os.environ.get('BSKY_PASSWORD') if os.environ.get('BSKY_PASSWORD') else BSKY_PASSWORD
-MASTODON_INSTANCE = os.environ.get('MASTODON_INSTANCE') if os.environ.get('MASTODON_INSTANCE') else MASTODON_INSTANCE
-MASTODON_HANDLE = os.environ.get('MASTODON_HANDLE') if os.environ.get('MASTODON_HANDLE') else MASTODON_HANDLE
-MASTODON_TOKEN = os.environ.get('MASTODON_TOKEN') if os.environ.get('MASTODON_TOKEN') else MASTODON_TOKEN
-TWITTER_APP_KEY = os.environ.get('TWITTER_APP_KEY') if os.environ.get('TWITTER_APP_KEY') else TWITTER_APP_KEY
-TWITTER_APP_SECRET = os.environ.get('TWITTER_APP_SECRET') if os.environ.get('TWITTER_APP_SECRET') else TWITTER_APP_SECRET
-TWITTER_ACCESS_TOKEN = os.environ.get('TWITTER_ACCESS_TOKEN') if os.environ.get('TWITTER_ACCESS_TOKEN') else TWITTER_ACCESS_TOKEN
-TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET') if os.environ.get('TWITTER_ACCESS_TOKEN_SECRET') else TWITTER_ACCESS_TOKEN_SECRET
+BSKY_HANDLE = (
+    os.environ.get("BSKY_HANDLE") if os.environ.get("BSKY_HANDLE") else BSKY_HANDLE
+)
+BSKY_PASSWORD = (
+    os.environ.get("BSKY_PASSWORD")
+    if os.environ.get("BSKY_PASSWORD")
+    else BSKY_PASSWORD
+)
+MASTODON_INSTANCE = (
+    os.environ.get("MASTODON_INSTANCE")
+    if os.environ.get("MASTODON_INSTANCE")
+    else MASTODON_INSTANCE
+)
+MASTODON_HANDLE = (
+    os.environ.get("MASTODON_HANDLE")
+    if os.environ.get("MASTODON_HANDLE")
+    else MASTODON_HANDLE
+)
+MASTODON_TOKEN = (
+    os.environ.get("MASTODON_TOKEN")
+    if os.environ.get("MASTODON_TOKEN")
+    else MASTODON_TOKEN
+)
+TWITTER_APP_KEY = (
+    os.environ.get("TWITTER_APP_KEY")
+    if os.environ.get("TWITTER_APP_KEY")
+    else TWITTER_APP_KEY
+)
+TWITTER_APP_SECRET = (
+    os.environ.get("TWITTER_APP_SECRET")
+    if os.environ.get("TWITTER_APP_SECRET")
+    else TWITTER_APP_SECRET
+)
+TWITTER_ACCESS_TOKEN = (
+    os.environ.get("TWITTER_ACCESS_TOKEN")
+    if os.environ.get("TWITTER_ACCESS_TOKEN")
+    else TWITTER_ACCESS_TOKEN
+)
+TWITTER_ACCESS_TOKEN_SECRET = (
+    os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")
+    if os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")
+    else TWITTER_ACCESS_TOKEN_SECRET
+)
