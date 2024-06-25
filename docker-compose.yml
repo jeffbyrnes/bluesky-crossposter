@@ -28,5 +28,5 @@ services:
       # job interval, defaults to 1 hour (the max lag between Bluesky and Twitter/Mastodon)
       RUN_INTERVAL: 3600
     volumes:
-      - ./dbhost:/db
-      - ./backup:/backup
+      - ./db:/db
+      - ./backups:/backups
