@@ -1,7 +1,8 @@
 __pycache__
 database.json
 database.bak
-logs/*.log*
-backups/*.bak*
+db/
+logs/
+backups/
 .env
-*.jpg
+images/
